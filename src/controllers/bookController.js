@@ -26,7 +26,7 @@ class BookController {
                 ...newBook,
                 author: { ...authorFound._doc },
             };
-            const createdBook = await book.create(completeBook);
+            await book.create(completeBook);
 
             res.status(201).json({
                 message: "Created successfully",

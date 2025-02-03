@@ -1,5 +1,6 @@
 // Vai ser responsável por ser uma interface intermediária entre as requisições
 
+import mongoose from "mongoose";
 import { author } from "../models/Author.js";
 
 class AuthorController {
@@ -30,10 +31,22 @@ class AuthorController {
         try {
             const id = req.params.id;
             const authorFound = await author.findById(id);
-            res.status(200).json(authorFound);
+            if (authorFound !== null) {
+                res.status(200).send(authorFound);
+            } else {
+                res.status(404).json({
+                    message:
+                        "Request failed fetching an author: author not found",
+                });
+            }
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed fetching an author`,
+            if (error instanceof mongoose.Error.CastError) {
+                res.status(400).send({
+                    message: "One or more characters are incorrect",
+                });
+            }
+            res.status(500).send({
+                message: `Request failed fetching an author: ${error.message}`,
             });
         }
     }
