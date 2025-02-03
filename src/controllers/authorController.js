@@ -1,20 +1,16 @@
 // Vai ser responsável por ser uma interface intermediária entre as requisições
-
-import mongoose from "mongoose";
 import { author } from "../models/Author.js";
 
 class AuthorController {
-    static async listAuthors(req, res) {
+    static async listAuthors(req, res, next) {
         try {
             const listAuthors = await author.find({});
             res.status(200).json(listAuthors);
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed`,
-            });
+            next(error);
         }
     }
-    static async registerAuthor(req, res) {
+    static async registerAuthor(req, res, next) {
         try {
             const newAuthor = await author.create(req.body);
             res.status(201).json({
@@ -22,12 +18,10 @@ class AuthorController {
                 book: newAuthor,
             });
         } catch (error) {
-            res.status(500).json({
-                message: `Failed to register new author: ${error.message}`,
-            });
+            next(error);
         }
     }
-    static async listAuthorById(req, res) {
+    static async listAuthorById(req, res, next) {
         try {
             const id = req.params.id;
             const authorFound = await author.findById(id);
@@ -40,17 +34,10 @@ class AuthorController {
                 });
             }
         } catch (error) {
-            if (error instanceof mongoose.Error.CastError) {
-                res.status(400).send({
-                    message: "One or more characters are incorrect",
-                });
-            }
-            res.status(500).send({
-                message: `Request failed fetching an author: ${error.message}`,
-            });
+            next(error);
         }
     }
-    static async updateAuthorById(req, res) {
+    static async updateAuthorById(req, res, next) {
         try {
             const id = req.params.id;
             await author.findByIdAndUpdate(id, req.body);
@@ -58,12 +45,10 @@ class AuthorController {
                 message: "The author has been updated successfully",
             });
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed updating an author`,
-            });
+            next(error);
         }
     }
-    static async deleteAuthorsById(req, res) {
+    static async deleteAuthorsById(req, res, next) {
         try {
             const id = req.params.id;
             await author.findByIdAndDelete(id);
@@ -71,9 +56,7 @@ class AuthorController {
                 message: "The author has been deleted successfully",
             });
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed deleting the author`,
-            });
+            next(error);
         }
     }
 }

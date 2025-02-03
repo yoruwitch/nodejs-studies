@@ -1,6 +1,7 @@
 import express from "express";
 import connectDatabase from "./config/dbConnect.js";
 import routes from "./routes/index.js";
+import errorHandler from "./middlwares/errorhandle.js";
 
 //instância da conexão com o Mongo, colocando await por se tratar de async
 const connection = await connectDatabase();
@@ -16,5 +17,7 @@ connection.once("open", () => {
 
 const app = express();
 routes(app);
+
+app.use(errorHandler);
 
 export default app;

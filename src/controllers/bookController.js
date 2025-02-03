@@ -4,20 +4,18 @@ import { author } from "../models/Author.js";
 import book from "../models/Book.js";
 
 class BookController {
-    static async listBooks(req, res) {
+    static async listBooks(req, res, next) {
         try {
             /*.find() -> método do mongoose, se conecta com o banco MongoDb, encontrando tudo que tem,
    pois não foi especificado nada */
             const listBooks = await book.find({});
             res.status(200).json(listBooks);
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed`,
-            });
+            next(error);
         }
     }
-    static async registerBook(req, res) {
-    //req.body -> corpo da requisição, para usar um POST, precisamos usar o body para enviar como request
+    static async registerBook(req, res, next) {
+        //req.body -> corpo da requisição, para usar um POST, precisamos usar o body para enviar como request
         const newBook = req.body;
 
         try {
@@ -33,24 +31,20 @@ class BookController {
                 book: newBook,
             });
         } catch (error) {
-            res.status(500).json({
-                message: `Failed to register new book: ${error.message}`,
-            });
+            next(error);
         }
     }
-    static async listBookById(req, res) {
+    static async listBookById(req, res, next) {
         try {
             const id = req.params.id;
             /*.findById() -> método do mongoose, se conecta com o banco MongoDb, encontrando pelo ID */
             const foundBook = await book.findById(id);
             res.status(200).json(foundBook);
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed fetching a book`,
-            });
+            next(error);
         }
     }
-    static async updateBookById(req, res) {
+    static async updateBookById(req, res, next) {
         try {
             const id = req.params.id;
 
@@ -63,12 +57,10 @@ class BookController {
                 message: "The book has been updated successfully",
             });
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed updating a book`,
-            });
+            next(error);
         }
     }
-    static async deleteBookById(req, res) {
+    static async deleteBookById(req, res, next) {
         try {
             const id = req.params.id;
 
@@ -81,14 +73,12 @@ class BookController {
                 message: "The book has been deleted successfully",
             });
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed deleting the book`,
-            });
+            next(error);
         }
     }
 
-    static async listBookByPublisher(req, res) {
-    // req.query -> query string da requisição, para filtrar os livros pelo publisher
+    static async listBookByPublisher(req, res, next) {
+        // req.query -> query string da requisição, para filtrar os livros pelo publisher
         const publisher = req.query.publisher;
         try {
             const booksByPublisher = await book.find({
@@ -96,22 +86,8 @@ class BookController {
             });
             res.status(200).json(booksByPublisher);
         } catch (error) {
-            res.status(500).json({
-                message: `${error.message} - Request failed searching the book`,
-            });
+            next(error);
         }
     }
 }
-
-/*
-Interessante saber: para fazer pesquisa de editoras com espaços
-ou caracter & => {
-        %20 é o código de escape para um espaço.
-        %26 é o código de escape para o caractere &.
-    }
-
-    Exemplo:
-http://localhost:3000/books?publisher=Secker%20%26%20Warburg
-*/
-
 export default BookController;
