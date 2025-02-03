@@ -15,7 +15,6 @@ class AuthorController {
     }
     static async registerAuthor(req, res) {
         try {
-            
             const newAuthor = await author.create(req.body);
             res.status(201).json({
                 message: "Created successfully",
