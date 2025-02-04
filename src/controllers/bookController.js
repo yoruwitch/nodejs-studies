@@ -15,10 +15,11 @@ class BookController {
         }
     }
     static async registerBook(req, res, next) {
-        //req.body -> corpo da requisição, para usar um POST, precisamos usar o body para enviar como request
-        const newBook = req.body;
-
+        
         try {
+            //req.body -> corpo da requisição, para usar um POST, precisamos usar o body para enviar como request
+            let newBook = new book(req.body);
+            
             const authorFound = await author.findById(newBook.author);
             const completeBook = {
                 ...newBook,

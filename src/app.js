@@ -17,10 +17,10 @@ connection.once("open", () => {
 
 const app = express();
 
-app.use((req, res, next) => {
-    console.log("Código de um novo middleware");
-    next();
-});
+// app.get("/books", (req, res, next) => {
+//     console.log("Middleware registrado no GET da rota /books");
+//     next();
+// });
 
 routes(app);
 

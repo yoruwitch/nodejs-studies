@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { authorSchema } from "./Author.js";
 
 /* -> Schema é um objeto de configuração que define a estrutura
   e as propriedades de um documento
@@ -7,13 +6,23 @@ import { authorSchema } from "./Author.js";
 const bookSchema = new mongoose.Schema(
     {
         id: { type: mongoose.Schema.Types.ObjectId },
-        title: { type: String, required: true },
-        publisher: { type: String },
+        title: {
+            type: String,
+            required: [true, "The name of the book is required"],
+        },
+        publisher: {
+            type: String,
+            required: [true, "The name of the publisher is required"],
+        },
         price: { type: Number },
         pages: { type: Number },
 
         // esse Schema se refere ao model para integrar as duas entidades
-        author: authorSchema,
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "authors",
+            required: [true, "The author is required"],
+        },
     },
     { versionKey: false }
 );

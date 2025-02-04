@@ -7,6 +7,13 @@ function errorHandler(error, req, res, next) {
         res.status(400).send({
             message: "Invalid ID format",
         });
+    } else if (error instanceof mongoose.Error.ValidationError) {
+        const messagesError = Object.values(error.errors)
+            .map((error) => error.message)
+            .join(";");
+        res.status(400).send({
+            message: `The following errors have been found: ${messagesError}`,
+        });
     } else {
         res.status(500).send({
             message: "Internal server error",
